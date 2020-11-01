@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 import dj_database_url
 
@@ -127,20 +127,35 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+DATABASES['default'] = dj_database_url.config()
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+ALLOWED_HOSTS = ['*']
+
+STATIC_ROOT = 'staticfiles'
+
+DEBUG = False
+
 try:
     from .local_settings import *
 except ImportError:
     pass
 
-if not DEBUG:
-    SECRET_KEY = os.environ['SECRET_KEY']
+# try:
+#     from .local_settings import *
+# except ImportError:
+#     pass
 
-db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
-DATABASES['default'].update(db_from_env)
+# if not DEBUG:
+#     SECRET_KEY = os.environ['SECRET_KEY']
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+# DATABASES['default'].update(db_from_env)
 
-if not DEBUG:
-    SECRET_KEY = os.environ['SECRET_KEY']
-    import django_heroku #追加
-    django_heroku.settings(locals()) #追加
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# if not DEBUG:
+#     SECRET_KEY = os.environ['SECRET_KEY']
+#     import django_heroku #追加
+#     django_heroku.settings(locals()) #追加
